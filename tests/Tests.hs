@@ -506,7 +506,10 @@ oneLtPowSubst :: forall a b. (b ~ (2^a)) => Proxy a -> Proxy a
 oneLtPowSubst = go
   where
     go :: 1 <= b => Proxy a -> Proxy a
-    go = id 
+    go = id
+
+givenLEZeroNotImpossible :: forall (a :: Nat) . a <= 0 => Proxy a -> Proxy 'True
+givenLEZeroNotImpossible p = Proxy @((a + a - a) <=? 0)
 
 main :: IO ()
 main = defaultMain tests
@@ -611,6 +614,8 @@ tests = testGroup "ghc-typelits-natnormalise"
     , testCase "b ~ (2^a) => 1 <= b" $
       show (oneLtPowSubst (Proxy :: Proxy 0)) @?=
       "Proxy"
+    , testCase "a <= 0 is not impossible" $
+      givenLEZeroNotImpossible (Proxy @0) @?= Proxy
     ]
   , testGroup "errors"
     [ testCase "x + 2 ~ 3 + x" $ testProxy1 `throws` testProxy1Errors

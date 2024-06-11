@@ -656,6 +656,8 @@ isNatural (S [P []])       = return True
 isNatural (S [P (I i:ps)])
   | i >= 0    = isNatural (S [P ps])
   | otherwise = return False
+  -- If i is not a natural number then their sum *might* be natural,
+  -- but we simply can't be sure since ps might be zero
 isNatural (S [P (V _:ps)]) = isNatural (S [P ps])
 isNatural (S [P (E s p:ps)]) = do
   sN <- isNatural s
